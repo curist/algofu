@@ -22,13 +22,12 @@ function merge(arr1, arr2) {
 
 
 module.exports.sort = function merge_sort(array) {
-  var working_arr = array.map(function(e){return [e];});
+  var middle = Math.floor(array.length / 2)
+    , arr_left = array.slice(0, middle)
+    , arr_right = array.slice(middle);
 
-  while(working_arr.length > 1) {
-    // unstable!!
-    working_arr.push(
-      merge(working_arr.shift(), working_arr.shift())
-    );
+  if(array.length <= 1) {
+    return array;
   }
-  return working_arr[0];
+  return merge(merge_sort(arr_left), merge_sort(arr_right));
 };
