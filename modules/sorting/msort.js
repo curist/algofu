@@ -24,6 +24,18 @@ function merge(arr1, arr2) {
   }
   return merged_arr;
 }
+
+
 module.exports.sort = function merge_sort(array) {
-  return array;
+  var arr1
+    , arr2
+    , working_arr = array.map(function(e){return [e];});
+
+  while(working_arr.length > 1) {
+    arr1 = working_arr.shift();
+    arr2 = working_arr.shift();
+
+    working_arr.push(merge(arr1, arr2));
+  }
+  return working_arr[0];
 };
