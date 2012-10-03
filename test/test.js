@@ -1,4 +1,5 @@
 var fs = require('fs')
+  , path = require('path')
   , _ = require('lodash')
   , chai = require('chai')
   , expect = chai.expect;
@@ -15,7 +16,7 @@ describe('Algorithm implementing', function(){
       , right_answer = _.clone(arr).sort(function(a,b){return (a-b);})
       , result;
 
-    fs.readdirSync(dir).forEach(function(path){
+    fs.readdirSync(path.join(__dirname, dir)).forEach(function(path){
       it('should derive the correct answer('+path+')', function(){
         sort_module = require(dir + path);
         expect(_.isEqual(sort_module.sort(arr), right_answer)).to.equal(true);
