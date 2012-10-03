@@ -1,4 +1,5 @@
-var _ = require('lodash')
+var fs = require('fs')
+  , _ = require('lodash')
   , chai = require('chai')
   , expect = chai.expect;
 
@@ -14,14 +15,11 @@ describe('Algorithm implementing', function(){
       , right_answer = _.clone(arr).sort(function(a,b){return (a-b);})
       , result;
 
-    it('should derive the correct answer(quick sort)', function(){
-      sort_module = require(dir + 'qsort');
-      expect(_.isEqual(sort_module.sort(arr), right_answer)).to.equal(true);
-    });
-
-    it('should derive the correct answer(merge sort)', function(){
-      sort_module = require(dir + 'msort');
-      expect(_.isEqual(sort_module.sort(arr), right_answer)).to.equal(true);
+    fs.readdirSync(dir).forEach(function(path){
+      it('should derive the correct answer('+path+')', function(){
+        sort_module = require(dir + path);
+        expect(_.isEqual(sort_module.sort(arr), right_answer)).to.equal(true);
+      });
     });
   });
 });
