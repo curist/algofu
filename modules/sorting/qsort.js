@@ -1,4 +1,4 @@
-module.exports.qsort = function quick_sort(array) {
+module.exports.sort = function quick_sort(array) {
   var pivot = array[0]
     , smaller = []
     , larger = []
