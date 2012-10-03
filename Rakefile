@@ -7,5 +7,5 @@ end
 
 desc "watch file changes and running tests all over again"
 task :watch do
-  sh "mocha -wR spec"
+  sh "mocha -wbR min"
 end

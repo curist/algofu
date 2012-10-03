@@ -22,6 +22,14 @@ describe('Algorithm implementing', function(){
     });
 
     fs.readdirSync(path.join(__dirname, dir)).forEach(function(path){
+      it('should not change the original array('+path+')', function(){
+        sort_module = require(dir + path);
+        result = sort_module.sort(arr);
+        expect(_.isEqual(arr, arr_backup)).to.equal(true);
+      });
+    });
+
+    fs.readdirSync(path.join(__dirname, dir)).forEach(function(path){
       it('should derive the correct answer('+path+')', function(){
         sort_module = require(dir + path);
         result = sort_module.sort(arr);
@@ -29,13 +37,6 @@ describe('Algorithm implementing', function(){
       });
     });
 
-    fs.readdirSync(path.join(__dirname, dir)).forEach(function(path){
-      it('should not change the original array('+path+')', function(){
-        sort_module = require(dir + path);
-        result = sort_module.sort(arr);
-        expect(_.isEqual(arr, arr_backup)).to.equal(true);
-      });
-    });
   });
 });
 
