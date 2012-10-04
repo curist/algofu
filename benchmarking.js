@@ -6,6 +6,7 @@ var fs = require('fs')
     , dir = './modules/sorting/'
     , MAX_RUNS = 100
     , ARRAY_SIZE = 50000
+    , TIME_LIMIT = 10000 // 10000 ms = 10 secs
     , arrays = []
     , tmp_arr
     , i
@@ -33,6 +34,9 @@ var fs = require('fs')
 
     sort_module = require(dir + module_path);
     for(i = 0; i < MAX_RUNS; i++) {
+      if(+(new Date())-start_time > TIME_LIMIT) {
+        break;
+      }
       current_start_time = +(new Date());
       sort_module.sort(arrays[i]);
       current_total_time = +(new Date()) - current_start_time;
@@ -43,13 +47,24 @@ var fs = require('fs')
         worst_time = current_total_time;
       }
     }
-    total_time = +(new Date()) - start_time;
-    console.log(module_path + '\n\t' +
-                'total: ' + total_time + ' ms\t' +
-                'avg: ' + total_time/MAX_RUNS + ' ms\t' +
-                'best: ' + best_time + ' ms\t' +
-                'worst: ' + worst_time + ' ms.');
 
+    total_time = +(new Date()) - start_time;
+
+    if(i < MAX_RUNS) {
+      // the sorting algo exceeds time limit
+      console.log(module_path + '(TLE!!)\t' +
+                  'rounds: ' + i + '\n\t' +
+                  'total: ' + total_time + ' ms\t' +
+                  'avg: ' + (total_time/i).toFixed(2) + ' ms\t' +
+                  'best: ' + best_time + ' ms\t' +
+                  'worst: ' + worst_time + ' ms.');
+    } else {
+      console.log(module_path + '\n\t' +
+                  'total: ' + total_time + ' ms\t' +
+                  'avg: ' + (total_time/MAX_RUNS).toFixed(2) + ' ms\t' +
+                  'best: ' + best_time + ' ms\t' +
+                  'worst: ' + worst_time + ' ms.');
+    }
     console.log('\n');
   });
 })();
