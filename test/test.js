@@ -38,5 +38,47 @@ describe('Algorithm implementing', function(){
     });
 
   });
+
+  describe('Tree', function(){
+    var dir = '../modules/tree/';
+
+    describe('Heap(min)', function(){
+      var Heap = require(dir+'heap').Heap
+        , heap
+        , elements_to_push = [];
+
+      beforeEach(function(){
+        var i;
+
+        heap = new Heap();
+        elements_to_push = [];
+
+        for(i = 0; i < 30; i++){
+          elements_to_push[i] = Math.floor(Math.random()*10000);
+        }
+
+      });
+
+      it('should let the smallest element pushed to root', function(){
+        heap.push(2);
+        heap.push(3);
+        heap.push(1);
+        expect(heap.pop()).to.equal(1);
+      });
+
+      it('should always pops out the minimun element', function(){
+        var i;
+        for(i in elements_to_push){
+          heap.push(elements_to_push[i]);
+        }
+        elements_to_push.sort(function(a,b){return a-b;});
+
+        // test serveral times..
+        for(i = 0; i < 5; i++){
+          expect(heap.pop()).to.equal(elements_to_push.shift());
+        }
+      });
+    });
+  });
 });
 
