@@ -25,7 +25,13 @@ var fs   = require('fs')
       , avg_times: []
       , best_times: []
       , worst_times: []
-      };
+      }
+    , array_keys_to_be_colorized = [
+        'total_times'
+      , 'avg_times'
+      , 'best_times'
+      , 'worst_times'
+      ];
 
   function benchmark(module_path){
     var start_time = +(new Date())
@@ -83,6 +89,9 @@ var fs   = require('fs')
     }
 
     for(propKey in arrays_for_output){
+      if(!_(array_keys_to_be_colorized).contains(propKey)){
+        continue;
+      }
       arr = arrays_for_output[propKey];
       min = _(arr).min();
       max = _(arr).max();
