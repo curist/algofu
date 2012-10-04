@@ -1,5 +1,9 @@
-var fs = require('fs')
-  , path = require('path');
+var fs   = require('fs')
+  , path = require('path')
+  , _    = require('lodash')
+  , clc  = require('cli-color')
+  , good = clc.green.bold
+  , bad  = clc.red.bold;
 
 (function sort_algo_benchmarks(){
   var sort_module
@@ -12,7 +16,16 @@ var fs = require('fs')
     , tmp_arr
     , i
     , j
-    , stage;
+    , stage
+    , propKey
+    , arrays_for_output = {
+        sort_modules: []
+      , completed_rounds: []
+      , total_times: []
+      , avg_times: []
+      , best_times: []
+      , worst_times: []
+      };
 
   function benchmark(module_path){
     var start_time = +(new Date())
@@ -45,20 +58,74 @@ var fs = require('fs')
 
     total_time = +(new Date()) - start_time;
 
-    if(i < MAX_RUNS) {
-      // the sorting algo exceeds time limit
-      console.log(module_path + '(TLE!!)\t' +
-                  'rounds: ' + i + '\n\t');
-    } else {
-      console.log(module_path + '\n\t');
+    arrays_for_output.sort_modules.push(module_path);
+    arrays_for_output.completed_rounds.push(i);
+    arrays_for_output.total_times.push(total_time);
+    arrays_for_output.avg_times.push(parseFloat((total_time/i).toPrecision(5), 10));
+    arrays_for_output.best_times.push(best_time);
+    arrays_for_output.worst_times.push(worst_time);
+
+  }
+
+  function preParsingResult(){
+    var min
+      , max
+      , propKey
+      , arr;
+
+    function colorizing(e){
+      if(e === min){
+        return good(e);
+      } else if(e === max){
+        return bad(e);
+      }
+      return e;
     }
 
-    console.log('total: ' + total_time + ' ms\t' +
-                'avg: ' + (total_time/MAX_RUNS).toFixed(2) + ' ms\t' +
-                'best: ' + best_time + ' ms\t' +
-                'worst: ' + worst_time + ' ms.');
+    for(propKey in arrays_for_output){
+      arr = arrays_for_output[propKey];
+      min = _(arr).min();
+      max = _(arr).max();
 
-    console.log('\n');
+      arrays_for_output[propKey] = _(arr).map(colorizing);
+    }
+  }
+
+  function outputResult(){
+    var i
+      , rounds
+      , sort_module
+      , total_time
+      , avg_time
+      , best_time
+      , worst_time;
+
+    preParsingResult();
+
+    for(i = 0; i < arrays_for_output.sort_modules.length; i++){
+      rounds = arrays_for_output.completed_rounds[i];
+      sort_module = arrays_for_output.sort_modules[i];
+      total_time = arrays_for_output.total_times[i];
+      avg_time = arrays_for_output.avg_times[i];
+      best_time = arrays_for_output.best_times[i];
+      worst_time = arrays_for_output.worst_times[i];
+
+      if(rounds < MAX_RUNS) {
+        // the sorting algo exceeds time limit
+        console.log(sort_module + '(TLE!!)\t' +
+                    'rounds: ' + rounds);
+      } else {
+        console.log(sort_module);
+      }
+
+      console.log('\t'+
+                  'total: ' + total_time + ' ms\t' +
+                  'avg: ' + avg_time + ' ms\t' +
+                  'best: ' + best_time + ' ms\t' +
+                  'worst: ' + worst_time + ' ms.');
+
+      console.log();
+    }
   }
 
   for(stage = 0; stage < STAGES; stage++, ARRAY_SIZE*=3) {
@@ -77,7 +144,12 @@ var fs = require('fs')
     console.log("Array size: " +ARRAY_SIZE);
     console.log();
 
+    for(propKey in arrays_for_output){
+      arrays_for_output[propKey] = [];
+    }
+
     fs.readdirSync(path.join(__dirname, dir)).sort().forEach(benchmark);
+    outputResult();
   }
 })();
 
