@@ -14,6 +14,53 @@ var fs = require('fs')
     , j
     , stage;
 
+  function benchmark(module_path){
+    var start_time = +(new Date())
+      , total_time
+      , current_start_time
+      , current_total_time
+      , best_time = Infinity
+      , worst_time = 0;
+
+    sort_module = require(dir + module_path);
+    for(i = 0; i < MAX_RUNS; i++) {
+      if(+(new Date())-start_time > TIME_LIMIT) {
+        break;
+      }
+
+      current_start_time = +(new Date());
+
+      sort_module.sort(arrays[i]);
+
+      current_total_time = +(new Date()) - current_start_time;
+
+      if(current_total_time < best_time) {
+        best_time = current_total_time;
+      }
+
+      if(current_total_time > worst_time) {
+        worst_time = current_total_time;
+      }
+    }
+
+    total_time = +(new Date()) - start_time;
+
+    if(i < MAX_RUNS) {
+      // the sorting algo exceeds time limit
+      console.log(module_path + '(TLE!!)\t' +
+                  'rounds: ' + i + '\n\t');
+    } else {
+      console.log(module_path + '\n\t');
+    }
+
+    console.log('total: ' + total_time + ' ms\t' +
+                'avg: ' + (total_time/MAX_RUNS).toFixed(2) + ' ms\t' +
+                'best: ' + best_time + ' ms\t' +
+                'worst: ' + worst_time + ' ms.');
+
+    console.log('\n');
+  }
+
   for(stage = 0; stage < STAGES; stage++, ARRAY_SIZE*=3) {
     arrays = [];
     for(j = 0; j < MAX_RUNS; j++) {
@@ -30,48 +77,7 @@ var fs = require('fs')
     console.log("Array size: " +ARRAY_SIZE);
     console.log();
 
-    fs.readdirSync(path.join(__dirname, dir)).sort().forEach(function(module_path){
-      var start_time = +(new Date())
-        , total_time
-        , current_start_time
-        , current_total_time
-        , best_time = Infinity
-        , worst_time = 0;
-
-      sort_module = require(dir + module_path);
-      for(i = 0; i < MAX_RUNS; i++) {
-        if(+(new Date())-start_time > TIME_LIMIT) {
-          break;
-        }
-        current_start_time = +(new Date());
-        sort_module.sort(arrays[i]);
-        current_total_time = +(new Date()) - current_start_time;
-        if(current_total_time < best_time) {
-          best_time = current_total_time;
-        }
-        if(current_total_time > worst_time) {
-          worst_time = current_total_time;
-        }
-      }
-
-      total_time = +(new Date()) - start_time;
-
-      if(i < MAX_RUNS) {
-        // the sorting algo exceeds time limit
-        console.log(module_path + '(TLE!!)\t' +
-                    'rounds: ' + i + '\n\t' +
-                    'total: ' + total_time + ' ms\t' +
-                    'avg: ' + (total_time/i).toFixed(2) + ' ms\t' +
-                    'best: ' + best_time + ' ms\t' +
-                    'worst: ' + worst_time + ' ms.');
-      } else {
-        console.log(module_path + '\n\t' +
-                    'total: ' + total_time + ' ms\t' +
-                    'avg: ' + (total_time/MAX_RUNS).toFixed(2) + ' ms\t' +
-                    'best: ' + best_time + ' ms\t' +
-                    'worst: ' + worst_time + ' ms.');
-      }
-      console.log('\n');
-    });
+    fs.readdirSync(path.join(__dirname, dir)).sort().forEach(benchmark);
   }
 })();
+
