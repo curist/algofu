@@ -1,4 +1,4 @@
-module.exports.sort = function insertion_sort(array){
+module.exports.sort = function selection_sort(array){
   var i
     , j
     , min
