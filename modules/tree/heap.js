@@ -45,9 +45,15 @@ module.exports.Heap = function(){
       // if right hand side child is smaller
       if((_heap[children_index+1]||Infinity) < children_value) {
         children_index += 1;
+        children_value = _heap[children_index];
+      }
+
+      if(val < children_value){
+        break;
       }
       swap(index, children_index);
       index = children_index;
+      val = _heap[index];
     }
     return min;
   };

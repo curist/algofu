@@ -1,9 +1,20 @@
-// begin, end, are inclusive
-function build_min_heap(array, begin, end){
-
-}
+var Heap = require('../tree/heap').Heap
+  , heap = new Heap();
 
 module.exports.sort = function heap_sort(array){
-  return array.slice(0).sort(function(a,b){return a-b;});
+  var i
+    , len = array.length
+    , working_arr = []
+    , num;
+
+  for(i = 0; i < len; i++){
+    heap.push(array[i]);
+  }
+
+  for(i = 0; i < len; i++){
+    num = heap.pop();
+    working_arr.push(num);
+  }
+  return working_arr;
 };
 

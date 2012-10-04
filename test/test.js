@@ -73,8 +73,7 @@ describe('Algorithm implementing', function(){
         }
         elements_to_push.sort(function(a,b){return a-b;});
 
-        // test serveral times..
-        for(i = 0; i < 5; i++){
+        for(i = 0; i < 30; i++){
           expect(heap.pop()).to.equal(elements_to_push.shift());
         }
       });
